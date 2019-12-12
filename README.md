@@ -1,2 +1,5 @@
-# node-project
-node project
+# PROJECT ALACAUQ
+
+This is our awesome project.
+Enjoy the lecture.
+La bise.
