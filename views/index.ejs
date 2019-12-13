@@ -10,11 +10,16 @@
         Bring the metrics
       </button>
       <div id="metrics"></div>
+        
+        <button class="btn btn-danger" href="/logout" onClick='document.location.href="/logout"'>
+  Logout
+</button>
+        
     </div>
     <script>
       $('#show-metrics').click((e) => {
         e.preventDefault();
-        $.getJSON("/metrics.json", {}, (data) => {
+        $.getJSON("/metrics/<%= name %>", {}, (data) => {
           const content = data.map(d => {
             return 'timestamp: '+d.timestamp+', value: '+d.value+'';
           })
