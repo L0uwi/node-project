@@ -14,8 +14,8 @@ describe('Metrics', function () {
         dbMet.closeDB();
     });
     describe('#get', function () {
-        it('should get empty array or non existing group', function (done) {
-            dbMet.get("0", function (err, result) {
+        it('should get empty array on non existing group', function (done) {
+            dbMet.get("1", function (err, result) {
                 chai_1.expect(err).to.be.null;
                 chai_1.expect(result).to.not.be.undefined;
                 chai_1.expect(result).to.be.empty;
@@ -31,33 +31,11 @@ describe('Metrics', function () {
                     chai_1.expect(result).to.not.be.undefined;
                     chai_1.expect(result).to.not.be.empty;
                     if (result)
-                        chai_1.expect(result[0].value).to.be.equal(10);
+                        chai_1.expect(result[0].value).to.equal(10);
                     done();
                 });
             });
         });
+        //for delete => save, delete and get again -> if we get nothing it works
     });
-    /*describe('#delete', function () {
-      
-
-        it('should save and get', function (done) {
-            let metrics: Metric[] = []
-            metrics.push(new Metric('12345678', 10))
-            dbMet.save("1", metrics, function (err: Error | null, result?: Metric[]) {
-                dbMet.delete("1", metrics,function (err: Error | null, result?: Metric[]){
-
-                    dbMet.get("1", function (err: Error | null, result?: Metric[]) {
-                        expect(err).to.be.null
-                        expect(result).to.not.be.undefined
-                        expect(result).to.be.empty
-                        if(result)
-                            expect(result[0].value).to.be.equal(10)
-                        done()
-                    })
-
-                } )
-                    
-            })
-        })
-    })*/
 });

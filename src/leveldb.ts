@@ -18,6 +18,4 @@ export class LevelDB {
       del.sync(path, { force: true })
     }
   }
-  
 }
-
