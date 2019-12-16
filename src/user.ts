@@ -62,6 +62,8 @@ export class UserHandler {
         })
     }
 
+    
+
     //Save data to db (password and mail are in the same string so we need to use split we we read them)
     public save(user: User, callback: (err: Error | null) => void) {
         this.db.put(`user:${user.username}`, `${user.getPassword()}:${user.email}`, (err: Error | null) => {
@@ -72,6 +74,19 @@ export class UserHandler {
     //Delete data from db
     public delete(username: string, callback: (err: Error | null) => void) {
         // TODO
+    }
+
+    
+    //Validate if password given is the same as confirm password
+    public confirmPassword(password: string, confirmPassword: string): boolean {
+        // return comparison with hashed password
+        return password == confirmPassword
+    }
+
+    //Validate if mail given is the same as confirm mail
+    public confirmMail(mail: string, confirmMail: string): boolean {
+        // return comparison with hashed password
+        return mail == confirmMail
     }
 
    

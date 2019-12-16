@@ -66,7 +66,7 @@ authRouter.get('/login', function (req, res) {
 });
 //Routing to signup
 authRouter.get('/signup', function (req, res) {
-    res.render('signup');
+    res.render('signup', { err: null });
 });
 //Routing to logout
 authRouter.get('/logout', function (req, res) {
@@ -89,26 +89,107 @@ authRouter.post('/login', function (req, res, next) {
         }
     });
 });
-authRouter.post('/signup', [check('mail', 'email is required').isEmail()], function (req, res, next) {
+authRouter.post('/signup', [
+    check('mail', 'email is required').isEmail(),
+    check('password', 'password has to be longer than five characters').isLength({ min: 5 })
+], function (req, res, next) {
+    //Uses User get function (see user.ts line 55)
     dbUser.get(req.body.username, function (err, result) {
-        if (err)
-            next(err);
         //check validate data
         var resu = validationResult(req);
         var errors = resu.errors;
+        if (!dbUser.confirmMail(req.body.mail, req.body.confirm_mail)) {
+            errors.push({ value: 'confirm mail',
+                msg: 'Mail and confirm mail are not identical',
+                param: 'mail',
+                location: 'body' });
+        }
+        if (!dbUser.confirmPassword(req.body.password, req.body.confirm_password)) {
+            errors.push({ value: 'confirm password',
+                msg: 'Password and confirm password are not identical',
+                param: 'password',
+                location: 'body' });
+        }
+        //If return value different from undifined, the user already exists
+        if (!err || result !== undefined) {
+            errors.push({ value: 'exists',
+                msg: 'This user already exists !',
+                param: 'username',
+                location: 'body' });
+        }
         if (!resu.isEmpty()) {
-            console.log(errors);
+            res.render('signup', { err: errors });
         }
         else {
-            if (result === undefined || !result.validatePassword(req.body.password)) {
-                res.redirect('/login');
-            }
-            else {
-                console.log("user already exists");
-            }
+            //Else, we add it to the database
+            var user = new user_1.User(req.body.username, req.body.email, req.body.password);
+            dbUser.save(user, function (err) {
+                if (err)
+                    next(err);
+                //Respond that the add is successfull
+                else
+                    res.redirect('/login');
+            });
         }
     });
 });
+/*
+authRouter.post('/signup', [
+  check('mail','email is required').isEmail(),
+  check('password','password has to be longer than five characters').isLength({ min: 5 })],
+  (req: any, res: any, next: any) => {
+  dbUser.db.get(`user:${req.body.username}`, function (err: Error, data: any){
+    
+    if (err) next(err)
+    
+     //check validate data
+     const resu= validationResult(req);
+     var errors = resu.errors;
+
+     if(!dbUser.confirmMail(req.body.mail,req.body.confirm_mail)){
+      errors.push({ value: 'confirm mail',
+      msg: 'Mail and confirm mail are not identical',
+      param: 'mail',
+      location: 'body' })
+     }
+
+     if(!dbUser.confirmPassword(req.body.password,req.body.confirm_password)){
+      errors.push({ value: 'confirm password',
+      msg: 'Password and confirm password are not identical',
+      param: 'password',
+      location: 'body' })
+     }
+
+     if (data !== undefined) {
+      errors.push({ value: 'exists',
+      msg: 'This user already exists !',
+      param: 'username',
+      location: 'body' })
+    }
+     
+
+     if (!resu.isEmpty()) {
+       res.render('signup',{err: errors})
+      }
+
+      else {
+        //Else, we add it to the database
+        let user = new User(req.body.username, req.body.email, req.body.password)
+        dbUser.save(user, function (err: Error | null) {
+          if (err) next(err)
+          //Respond that the add is successfull
+          else {
+            res.status(201).send("user persisted")
+            res.redirect('/login')
+          }
+
+        })
+      }
+
+    
+  })
+})
+*/
 app.use(authRouter);
 var userRouter = express.Router();
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull

@@ -17,7 +17,7 @@
                     <input id="form_username" type="text" name="username" />
                 </div>
                 <div class="form-group">
-                    <label for="form_mail">email</label>
+                    <label for="form_mail">Email</label>
                     <input id="form_mail" type="text" name="mail"/>
                 </div>
                 <div class="form-group">
@@ -39,6 +39,25 @@
                 onClick='document.location.href="/login"'>
                 Sign In
             </button>
+
+            <% if(err){ %>
+                <hr />
+                <br>
+                <h4 style='color:red;'>Error(s)</h4>
+                
+                <ul>
+                    <% err.forEach(function(err){ %>
+                        <li style='color:red;'><%= err.msg %></li>
+                    <% });%>
+                </ul>
+
+            <% } %>
+              
         </div>
+
+       
+          
+        
+        
     </body>
 </html>

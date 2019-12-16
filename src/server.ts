@@ -74,7 +74,7 @@ authRouter.get('/login', (req: any, res: any) => {
 
 //Routing to signup
 authRouter.get('/signup', (req: any, res: any) => {
-  res.render('signup')
+  res.render('signup',{err: null})
 })
 
 //Routing to logout
@@ -97,39 +97,51 @@ authRouter.post('/login', (req: any, res: any, next: any) => {
     }
   })
 })
+authRouter.post('/signup', [
+  check('mail','email is required').isEmail(),
+  check('password','password has to be longer than five characters').isLength({ min: 5 })], (req: any, res: any, next: any) => {
+  //Uses User get function (see user.ts line 55)
+  dbUser.get(req.body.username, function (err: Error | null, result?: User) {
 
-authRouter.post('/signup', [check('mail','email is required').isEmail()], (req: any, res: any, next: any) => {
-  dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-    if (err) next(err)
-    
-     //check validate data
-     const resu= validationResult(req);
-     var errors = resu.errors;
+    //check validate data
+    const resu= validationResult(req);
+    var errors = resu.errors;
 
-     if (!resu.isEmpty()) {
-       console.log(errors)
+    if(!dbUser.confirmMail(req.body.mail,req.body.confirm_mail)){
+     errors.push({ value: 'confirm mail',
+     msg: 'Mail and confirm mail are not identical',
+     param: 'mail',
+     location: 'body' })
+    }
 
-          
-      }
+    if(!dbUser.confirmPassword(req.body.password,req.body.confirm_password)){
+     errors.push({ value: 'confirm password',
+     msg: 'Password and confirm password are not identical',
+     param: 'password',
+     location: 'body' })
+    }
 
-      else{
+  //If return value different from undifined, the user already exists
+    if (!err || result !== undefined) {
+      errors.push({ value: 'exists',
+      msg: 'This user already exists !',
+      param: 'username',
+      location: 'body' })   
+    } 
 
-        if (result === undefined || !result.validatePassword(req.body.password)) {
-        
-          res.redirect('/login')
-        
-        } else {
-          console.log("user already exists")
-          
-        }
-
-
-      }
-
-    
+    if (!resu.isEmpty()) {
+      res.render('signup',{err: errors})
+     }else {
+      //Else, we add it to the database
+      let user = new User(req.body.username, req.body.email, req.body.password)
+      dbUser.save(user, function (err: Error | null) {
+        if (err) next(err)
+        //Respond that the add is successfull
+        else res.redirect('/login')
+      })
+    }
   })
 })
-
 
 app.use(authRouter)
 

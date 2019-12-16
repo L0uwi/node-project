@@ -64,6 +64,16 @@ var UserHandler = /** @class */ (function () {
     UserHandler.prototype.delete = function (username, callback) {
         // TODO
     };
+    //Validate if password given is the same as confirm password
+    UserHandler.prototype.confirmPassword = function (password, confirmPassword) {
+        // return comparison with hashed password
+        return password == confirmPassword;
+    };
+    //Validate if mail given is the same as confirm mail
+    UserHandler.prototype.confirmMail = function (mail, confirmMail) {
+        // return comparison with hashed password
+        return mail == confirmMail;
+    };
     return UserHandler;
 }());
 exports.UserHandler = UserHandler;
