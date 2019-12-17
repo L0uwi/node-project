@@ -63,6 +63,7 @@ authRouter.get('/logout', function (req, res) {
     res.redirect('/login');
 });
 authRouter.post('/login', function (req, res, next) {
+    console.log("authRouter post method\n");
     dbUser.get(req.body.username, function (err, result) {
         if (err)
             next(err);
@@ -72,13 +73,14 @@ authRouter.post('/login', function (req, res, next) {
         else {
             req.session.loggedIn = true;
             req.session.user = result;
-            res.redirect('/');
+            res.redirect('/metric/' + req.body.username);
         }
     });
 });
 app.use(authRouter);
 var userRouter = express.Router();
 userRouter.post('/', function (req, res, next) {
+    console.log("userRouter post method\n");
     dbUser.get(req.body.username, function (err, result) {
         if (!err || result !== undefined) {
             res.status(409).send("user already exists");
@@ -95,6 +97,7 @@ userRouter.post('/', function (req, res, next) {
     });
 });
 userRouter.get('/:username', function (req, res, next) {
+    console.log("user router get method\n");
     dbUser.get(req.params.username, function (err, result) {
         if (err || result === undefined) {
             res.status(404).send("user not found");
@@ -112,5 +115,77 @@ var authCheck = function (req, res, next) {
         res.redirect('/login');
 };
 app.get('/', authCheck, function (req, res) {
-    res.render('index', { name: req.session.username });
+    res.render('index', { metrics: null, name: req.session.username });
 });
+var metricRouter = express.Router();
+metricRouter.get('/:username', function (req, res, next) {
+    console.log("user router get method\n");
+    dbMet.get1(req.params.username, function (err, result) {
+        if (err || result === undefined) {
+            res.status(404).send("user not found");
+        }
+        else {
+            //res.status(200).json(result);
+            res.render('index', { metrics: result, name: req.session.user.username });
+        }
+    });
+});
+metricRouter.get('/delete/:date', function (req, res, next) {
+    console.log("on est all\n");
+    dbMet.del(req.params.date, req.session.user.username, function (err) {
+        if (err)
+            next(err);
+        else {
+            //res.status(201).send("metric persisted");
+            console.log("metric deleted");
+            res.redirect('/metric/' + req.session.user.username);
+        }
+    });
+});
+metricRouter.get('/', function (req, res, next) {
+    dbMet.get1(req.session.user.username, function (err, result) {
+        if (err || result === undefined) {
+            res.status(404).send("user not found");
+        }
+        else {
+            //res.status(200).json(result)
+            res.render('index', { metrics: result, name: req.session.user.username });
+        }
+    });
+});
+metricRouter.post('/', function (req, res, next) {
+    var dd = req.body.dd;
+    if (dd < 10 && dd.toString().length == 1) {
+        dd = '0' + dd;
+    }
+    var mm = req.body.mm;
+    if (mm < 10 && mm.toString().length == 1) {
+        mm = '0' + mm;
+    }
+    var yyyy = req.body.yyyy;
+    req.session.user.username;
+    var date = dd + '-' + mm + '-' + yyyy;
+    var met = new metrics_1.Metric(date, req.body.quantity);
+    console.log(met.date, met.value);
+    dbMet.save1(met, req.session.user.username, function (err) {
+        if (err)
+            next(err);
+        else {
+            //res.status(201).send("metric persisted");
+            console.log("user persisted");
+            res.redirect('/metric/' + req.session.user.username);
+        }
+    });
+});
+app.use('/metric', metricRouter);
+/*dbMet.get(req.body.username, function (err: Error | null, result?: User) {
+  if (!err || result !== undefined) {
+   res.status(409).send("user already exists")
+  } else {
+    let user = new User(req.body.username, req.body.email, req.body.password)
+    dbUser.save(user, function (err: Error | null) {
+      if (err) next(err)
+      else res.status(201).send("user persisted")
+    })
+  }
+})*/
