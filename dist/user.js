@@ -65,7 +65,10 @@ var UserHandler = /** @class */ (function () {
     };
     //Delete data from db
     UserHandler.prototype.delete = function (username, callback) {
-        // TODO
+        var key = username;
+        this.db.del(key, function (err) {
+            callback(err);
+        });
     };
     //Validate if password given is the same as confirm password
     UserHandler.prototype.confirmPassword = function (password, confirmPassword) {

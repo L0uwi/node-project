@@ -13,11 +13,6 @@ app.set('views', __dirname + "/../views");
 app.set('view engine', 'ejs');
 //defining dbMet as MetricsHandler (see: metrics.ts file)
 var dbMet = new metrics_1.MetricsHandler('./db/metrics');
-/*
-app.get('/', (req: any, res: any) => {
-  res.write('Hello world')
-  res.end()
-})*/
 //rendering hello.ejs (views folder)
 app.get('/hello/:name', function (req, res) {
     res.render('index.ejs', { name: req.params.name });
@@ -118,7 +113,7 @@ authRouter.post('/signup', [
                 param: 'username',
                 location: 'body' });
         }
-        if (!resu.isEmpty() || errors.length != 0) {
+        if (!resu.isEmpty() /*|| errors.length !=0*/) {
             res.status(409).render('signup', { err: errors });
         }
         else {
@@ -153,6 +148,18 @@ userRouter.post('/', function (req, res, next) {
                 else
                     res.status(201).send("user persisted");
             });
+        }
+    });
+});
+//Used to store data of user in database, Aknowledges if User exists already or if add successfull
+userRouter.delete('/:username', function (req, res, next) {
+    //Uses User get function (see user.ts line 55)
+    dbUser.delete(req.params.username, function (err, result) {
+        if (!err) {
+            res.status(200).send("user successfully deleted");
+        }
+        else {
+            res.status(400).send("an error occured");
         }
     });
 });

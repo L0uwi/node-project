@@ -161,22 +161,24 @@ describe('Signup', function () {
             chai.request(app)
             .post('/signup')
             .send({
-                'username': 'Eloi',
+                'username': 'auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc',
                 'mail': 'e.a@gmail.com',
                 'confirm_mail':'e.a@gmail.com',
                 'password': 'admin',
                 'confirm_password': 'admin'
                 })
             .end(function(err, res) {
-                //chai.expect(res).to.have.status(200);
-                dbUser.get("Eloi", function(err, result) {
-                    //expect(err).to.be.null
-                    expect(result).to.not.be.undefined            
-                })
+                chai.expect(res).to.have.status("200");
             });
+            done();
+        });
 
-            
-
+        it('should delete a user successfully', function(done) {
+            chai.request(app)
+            .delete('/user/auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc')
+            .end(function(err, res) {
+                chai.expect(res).to.have.status("200");
+            });
             done();
         });
 

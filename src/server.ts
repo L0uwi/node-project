@@ -14,11 +14,7 @@ app.set('view engine', 'ejs');
 
 //defining dbMet as MetricsHandler (see: metrics.ts file)
 const dbMet: MetricsHandler = new MetricsHandler('./db/metrics')
-/*
-app.get('/', (req: any, res: any) => {
-  res.write('Hello world')
-  res.end()
-})*/
+
 
 //rendering hello.ejs (views folder)
 app.get('/hello/:name', (req: any, res: any) => {
@@ -135,7 +131,7 @@ authRouter.post('/signup', [
       location: 'body' })   
     } 
 
-    if (!resu.isEmpty() || errors.length !=0) {
+    if (!resu.isEmpty() /*|| errors.length !=0*/) {
       
       res.status(409).render('signup',{err: errors})
       
@@ -172,6 +168,21 @@ userRouter.post('/', (req: any, res: any, next: any) => {
     }
   })
 })
+
+//Used to store data of user in database, Aknowledges if User exists already or if add successfull
+userRouter.delete('/:username', (req: any, res: any, next: any) => {
+  //Uses User get function (see user.ts line 55)
+  dbUser.delete(req.params.username, function (err: Error | null, result?: User) {
+    if (!err) {
+     res.status(200).send("user successfully deleted")
+    } else {
+      res.status(400).send("an error occured")
+      
+    }
+  })
+})
+
+
 
 //Get value from User db
 userRouter.get('/:username', (req: any, res: any, next: any) => {
