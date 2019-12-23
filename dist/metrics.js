@@ -70,10 +70,9 @@ var MetricsHandler = /** @class */ (function () {
             else {
                 met.push(new Metric(date, value));
             }
-            console.log(data.key, '=', data.value);
+            //console.log(data.key, '=', data.value)
         })
             .on('end', function (err) {
-            console.log("\n" + met);
             callback(null, met);
         });
     };

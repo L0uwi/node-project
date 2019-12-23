@@ -136,7 +136,6 @@ authRouter.post('/signup', [
 var userRouter = express.Router();
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.post('/', function (req, res, next) {
-    console.log("userRouter post method\n");
     dbUser.get(req.body.username, function (err, result) {
         //If return value different from undifined, the user already exists
         if (!err || result !== undefined) {
@@ -163,8 +162,8 @@ userRouter.get('/delete', function (req, res, next) {
     delete req.session.user;
     dbUser.delete(username, function (err, result) {
         if (!err) {
-            //res.status(200).send("user successfully deleted")
-            res.redirect('/login');
+            res.status(200).redirect('/login'); //send("user successfully deleted")
+            //res.redirect('/login')
         }
         else {
             res.status(400).send("an error occured");

@@ -78,10 +78,9 @@ export class MetricsHandler {
         else {
           met.push(new Metric(date, value))
         }
-        console.log(data.key, '=', data.value)
+        //console.log(data.key, '=', data.value)
       })
       .on('end', (err: Error) => {
-        console.log("\n" + met)
         callback(null, met)
       })
   }

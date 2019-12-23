@@ -157,7 +157,6 @@ const userRouter = express.Router()
 
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.post('/', (req: any, res: any, next: any) => {
-  console.log("userRouter post method\n")
   dbUser.get(req.body.username, function (err: Error | null, result?: User) {
   //If return value different from undifined, the user already exists
     if (!err || result !== undefined) {
@@ -182,8 +181,8 @@ userRouter.get('/delete', (req: any, res: any, next: any) => {
   delete req.session.user
   dbUser.delete(username, function (err: Error | null, result?: User) {
     if (!err) {
-     //res.status(200).send("user successfully deleted")
-     res.redirect('/login')
+     res.status(200).redirect('/login')//send("user successfully deleted")
+     //res.redirect('/login')
     } else {
       res.status(400).send("an error occured")
     }
@@ -313,7 +312,5 @@ metricRouter.post('/modify', (req: any, res: any, next: any) => {
 
 
 app.use('/metric', metricRouter)
-
-
 
 module.exports = app;

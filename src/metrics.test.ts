@@ -15,7 +15,7 @@ describe('Metrics', function () {
         dbMet.closeDB()
     })
 
-    describe('#Metrics tests', function () {
+    describe('#Getting', function () {
         it('should get empty array on non existing group', function (done) {
             dbMet.get1("1", function (err: Error | null, result?: Metric[]) {
                 expect(err).to.be.null
@@ -24,7 +24,9 @@ describe('Metrics', function () {
                 done()
             })
         })
+    })
 
+    describe('#Saving and deleting', function () {
         it('should save (receiving a key and a metrics array in parameters) and get an array of metrics', function (done) {
             let metrics: Metric[] = []
             metrics.push(new Metric('12345678', 10))
@@ -90,7 +92,5 @@ describe('Metrics', function () {
             })
             done()
         })
-
-        //for delete => save, delete and get again -> if we get nothing it works
     })
 })

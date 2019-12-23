@@ -6,61 +6,69 @@
 </head>
 
 <body class="container">
-  <div class="col-md-6 col-md-offset-3">
+  <div class="col-md-10 col-md-offset-3">
     <h1>Hello <%= name %></h1>
+    <hr />
+    <% if(!modify){ %>
+    <p>This dashboard was developped in order to follow your water consumption per day</p>
+    <p> So, how many glasses of water did you drink ??</p>
+    <% } %>
+    <% if(modify){ %>
+    <p>Please proceed to all the changes you want below :</p>
+    <% } %>
     <% if(!modify){ %>
     <form action="/metric" method="post">
-      <div id="form" >
+      <div id="form">
         <div class="form-group">
           <label for="form_add_metric_quantity">Quantity of water (in glasses)</label>
-          <input id="form_add_metric_quantity" min="0" size="2" type="number" name="quantity" />
+          <input id="form_add_metric_quantity" min="0" size="2" type="number" name="quantity" required />
         </div>
         <div class="form-group">
           <label for="form_add_metric_date">Date</label>
-          <input id="form_add_metric_dd" type="number" min="1" max="31" name="dd" placeholder="DD" />
-          <input id="form_add_metric_mm" type="number" min="1" max="12" name="mm" placeholder="MM" />
-          <input id="form_add_metric_yyyy" type="number" min="1970" max="2020" name="yyyy" placeholder="YYYY" />
+          <input id="form_add_metric_dd" type="number" min="1" max="31" name="dd" placeholder="DD" required />
+          <input id="form_add_metric_mm" type="number" min="1" max="12" name="mm" placeholder="MM" required />
+          <input id="form_add_metric_yyyy" type="number" min="1970" max="2020" name="yyyy" placeholder="YYYY"
+            required />
         </div>
         <button class="btn btn-success" type="submit" value="Add">Add the metric</button>
       </div>
     </form>
     <% } %>
     <% if(modify){ %>
-      <form action="/metric/modify" method="post">
-        <div id="form" >
-          <div class="form-group">
-            <label for="form_modif_metric_quantity">Quantity of water (in glasses)</label>
-            <input id="form_modif_metric_quantity" min="0" size="2" type="number" value="<%= modify.value %>" name="modif_quantity" placeholder="<%= modify.value %>" />
-          </div>
-          <div class="form-group">
-            <label for="form_modif_metric_date">Date</label>
-            <input id="form_modif_metric_date" type="text"  value="<%= modify.date %>" name="modif_date"  placeholder="<%= modify.date %>" />
-          </div>
-          <button class="btn btn-warning" type="submit" value="Add">Modify the metric</button>
+    <form action="/metric/modify" method="post">
+      <div id="form">
+        <div class="form-group">
+          <label for="form_modif_metric_quantity">Quantity of water (in glasses)</label>
+          <input id="form_modif_metric_quantity" min="0" size="2" type="number" value="<%= modify.value %>"
+            name="modif_quantity" placeholder="<%= modify.value %>" />
         </div>
-      </form>
-      <% } %>
+        <div class="form-group">
+          <label for="form_modif_metric_date">Date</label>
+          <input id="form_modif_metric_date" type="text" value="<%= modify.date %>" name="modif_date"
+            placeholder="<%= modify.date %>" />
+        </div>
+        <button class="btn btn-warning" type="submit" value="Add">Modify the metric</button>
+      </div>
+    </form>
+    <% } %>
 
-    <br><br><br>
-   
-    <!--
-    <button class="btn btn-success" id="show-metrics">
-      Bring the metrics
-    </button>-->
-  
+    <br>
+
     <div id="metrics">
-        <% if(metrics){ %>
-          <hr />
-          <br>
-          <h4 style='color:rgb(206, 163, 44);'>Here are the metrics of <%= name %></h4>
-          <ul>
-              <% metrics.forEach(function(metrics){ %>
-                  <li style='color:#0004ff;'> Date : <%= metrics.date %> &nbsp; Quantity : <%= metrics.value %>
-                    <button class="btn btn-danger btn-sm" href="/metric/delete/<%= metrics.date %>" onClick='document.location.href="/metric/delete/<%= metrics.date %>"'>X</button>
-                    <button class="btn btn-warning btn-sm" href="/metric/modify/<%= metrics.date %>" onClick='document.location.href="/metric/modify/<%= metrics.date %>"'>Modifier</button>
-                  </li>
-              <% });%>
-          </ul>
+      <% if(metrics){ %>
+      <hr />
+      <br>
+      <h4 style='color:rgb(206, 163, 44);'>Here are the metrics of <%= name %></h4>
+      <ul>
+        <% metrics.forEach(function(metrics){ %>
+        <li style='color:#160e069f;'> Date : <%= metrics.date %> &nbsp; Quantity : <%= metrics.value %>
+          <button class="btn btn-danger btn-sm" href="/metric/delete/<%= metrics.date %>"
+            onClick='document.location.href="/metric/delete/<%= metrics.date %>"'>X</button>
+          <button class="btn btn-warning btn-sm" href="/metric/modify/<%= metrics.date %>"
+            onClick='document.location.href="/metric/modify/<%= metrics.date %>"'>Modifier</button>
+        </li>
+        <% });%>
+      </ul>
       <% } %>
     </div>
   </div>
@@ -75,7 +83,7 @@
       });
     })
   </script> -->
-  <br>
+  <hr />
   <button class="btn btn-danger" href="/logout" onClick='document.location.href="/logout"'>
     Logout
   </button>
@@ -83,5 +91,11 @@
     Destroy this account
   </button>
 </body>
+<br><br>
+<footer>
+  <div class="card-footer text-muted">
+    Developped by Louis Cauquelin & Eloi Alardet &copy;All rights reserved
+  </div>
+</footer>
 
 </html>
