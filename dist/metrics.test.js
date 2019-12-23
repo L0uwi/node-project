@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chai_1 = require("chai");
 var metrics_1 = require("./metrics");
 var leveldb_1 = require("./leveldb");
-var dbPath = 'db_test';
+var dbPath = 'db_test_metrics';
 var dbMet;
 describe('Metrics', function () {
     before(function () {

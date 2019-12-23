@@ -42,6 +42,9 @@ var UserHandler = /** @class */ (function () {
     function UserHandler(path) {
         this.db = leveldb_1.LevelDB.open(path);
     }
+    UserHandler.prototype.closeDB = function () {
+        this.db.close();
+    };
     //Return data from db using the given username (used in server.ts for the connexion)
     UserHandler.prototype.get = function (username, callback) {
         this.db.get("user:" + username, function (err, data) {
@@ -62,7 +65,10 @@ var UserHandler = /** @class */ (function () {
     };
     //Delete data from db
     UserHandler.prototype.delete = function (username, callback) {
-        // TODO
+        var key = "user:" + username;
+        this.db.del(key, function (err) {
+            callback(err);
+        });
     };
     //Validate if password given is the same as confirm password
     UserHandler.prototype.confirmPassword = function (password, confirmPassword) {

@@ -14,11 +14,7 @@ app.set('view engine', 'ejs');
 
 //defining dbMet as MetricsHandler (see: metrics.ts file)
 const dbMet: MetricsHandler = new MetricsHandler('./db/metrics')
-/*
-app.get('/', (req: any, res: any) => {
-  res.write('Hello world')
-  res.end()
-})*/
+
 
 //rendering hello.ejs (views folder)
 app.get('/hello/:name', (req: any, res: any) => {
@@ -47,6 +43,8 @@ app.listen(port, (err: Error) => {
   console.log(`Server is running on http://localhost:${port}`)
 })
 
+
+
 //Open a levelDB Session, see documentation: https://github.com/maxogden/node-level-session
 import session = require('express-session')
 import levelSession = require('level-session-store')
@@ -65,6 +63,9 @@ import { UserHandler, User } from './user'
 const dbUser: UserHandler = new UserHandler('./db/users')
 const authRouter = express.Router()
 
+app.use(authRouter)
+
+  
 //source: https://medium.com/@kongruksiamza/nodejs-validate-data-and-alert-message-in-ejs-template-engine-f2844a4cb255
 const {check, validationResult} = require('express-validator');
 //Routing to login
@@ -88,7 +89,11 @@ authRouter.get('/logout', (req: any, res: any) => {
 authRouter.post('/login', (req: any, res: any, next: any) => {
   console.log("authRouter post method\n")
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-    if (err) next(err)
+    /*if (err) 
+    {
+      next(err)
+      res.redirect('/login')
+    }*/
     if (result === undefined || !result.validatePassword(req.body.password)) {
       res.redirect('/login')
     } else {
@@ -98,6 +103,7 @@ authRouter.post('/login', (req: any, res: any, next: any) => {
     }
   })
 })
+
 authRouter.post('/signup', [
   check('mail','email is required').isEmail(),
   check('password','password has to be longer than five characters').isLength({ min: 5 })], (req: any, res: any, next: any) => {
@@ -130,21 +136,22 @@ authRouter.post('/signup', [
       location: 'body' })   
     } 
 
-    if (!resu.isEmpty()) {
-      res.render('signup',{err: errors})
+    if (!resu.isEmpty() /*|| errors.length !=0*/) {
+      
+      res.status(409).render('signup',{err: errors})
+      
      }else {
       //Else, we add it to the database
-      let user = new User(req.body.username, req.body.email, req.body.password)
+      let user = new User(req.body.username, req.body.mail, req.body.password)
       dbUser.save(user, function (err: Error | null) {
         if (err) next(err)
         //Respond that the add is successfull
-        else res.redirect('/login')
+        else res.status(200).redirect('/login')
       })
     }
   })
 })
 
-app.use(authRouter)
 
 const userRouter = express.Router()
 
@@ -166,6 +173,24 @@ userRouter.post('/', (req: any, res: any, next: any) => {
     }
   })
 })
+
+//Used to store data of user in database, Aknowledges if User exists already or if add successfull
+userRouter.get('/delete', (req: any, res: any, next: any) => {
+  //Uses User get function (see user.ts line 55)
+  let username = req.session.user.username
+  delete req.session.loggedIn
+  delete req.session.user
+  dbUser.delete(username, function (err: Error | null, result?: User) {
+    if (!err) {
+     //res.status(200).send("user successfully deleted")
+     res.redirect('/login')
+    } else {
+      res.status(400).send("an error occured")
+    }
+  })
+})
+
+
 
 //Get value from User db
 userRouter.get('/:username', (req: any, res: any, next: any) => {
@@ -291,3 +316,4 @@ app.use('/metric', metricRouter)
 
 
 
+module.exports = app;
