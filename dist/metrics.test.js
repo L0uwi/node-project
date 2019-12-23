@@ -13,7 +13,7 @@ describe('Metrics', function () {
     after(function () {
         dbMet.closeDB();
     });
-    describe('#get', function () {
+    describe('#Metrics tests', function () {
         it('should get empty array on non existing group', function (done) {
             dbMet.get1("1", function (err, result) {
                 chai_1.expect(err).to.be.null;

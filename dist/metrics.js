@@ -20,15 +20,18 @@ var MetricsHandler = /** @class */ (function () {
     MetricsHandler.prototype.closeDB = function () {
         this.db.close();
     };
-    MetricsHandler.prototype.save = function (key, metrics, callback) {
+    //saving method: receive a username and an array of metrics.
+    //The key in the db is based on 'username:date'
+    MetricsHandler.prototype.save = function (user, metrics, callback) {
         var stream = level_ws_1.default(this.db);
         stream.on('error', callback);
         stream.on('close', callback);
         metrics.forEach(function (m) {
-            stream.write({ key: key + ":" + m.date, value: m.value });
+            stream.write({ key: user + ":" + m.date, value: m.value });
         });
         stream.end();
     };
+    //second saving method: receive a username and only one metric
     MetricsHandler.prototype.save1 = function (metric, user, callback) {
         /*this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
           callback(err)
@@ -39,12 +42,14 @@ var MetricsHandler = /** @class */ (function () {
         stream.write({ key: user + ":" + metric.date, value: metric.value });
         stream.end();
     };
+    //deleting method: receive a date and a username
     MetricsHandler.prototype.del = function (date, username, callback) {
         var key = username + ':' + date;
         this.db.del(key, function (err) {
             callback(err);
         });
     };
+    //get method : receive a key (username) and retrieve all the metrics related
     MetricsHandler.prototype.get1 = function (key, callback) {
         var stream = this.db.createReadStream();
         var met = [];
@@ -65,24 +70,7 @@ var MetricsHandler = /** @class */ (function () {
             callback(null, met);
         });
     };
-    /*
-    public get(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
-      const stream = this.db.createReadStream()
-      var met: Metric[] = []
-      stream.on('error', callback)
-        .on('data', (data: any) => {
-          const [user, date] = data.key.split(":")
-          const value = data.value
-          if (key != user) {
-            console.log(`LevelDB error: ${data} does not match key ${key}`)
-          } else {
-            met.push(new Metric(date, value))
-          }
-        })
-        .on('end', (err: Error) => {
-          callback(null, met)
-        })
-    }*/
+    //second get method: receive a key ('username:date') and retrieve a special metric
     MetricsHandler.prototype.get2 = function (key, callback) {
         var stream = this.db.createReadStream();
         var met;

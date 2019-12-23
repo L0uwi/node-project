@@ -129,6 +129,8 @@ metricRouter.get('/:username', function (req, res, next) {
         }
     });
 });
+//routing method to get the modifying metric and fill the form with its data
+//calls the get2 method
 metricRouter.get('/modify/:date', function (req, res, next) {
     var key = req.session.user.username + ":" + req.params.date;
     console.log("ici c'est la" + key);
@@ -141,6 +143,8 @@ metricRouter.get('/modify/:date', function (req, res, next) {
         }
     });
 });
+//routing to delete a special metric
+//call del method
 metricRouter.get('/delete/:date', function (req, res, next) {
     dbMet.del(req.params.date, req.session.user.username, function (err) {
         if (err)
@@ -152,6 +156,8 @@ metricRouter.get('/delete/:date', function (req, res, next) {
         }
     });
 });
+//routing to get all the metrics from a user
+//call get1 method
 metricRouter.get('/', function (req, res, next) {
     dbMet.get1(req.session.user.username, function (err, result) {
         if (err || result === undefined) {
@@ -163,6 +169,8 @@ metricRouter.get('/', function (req, res, next) {
         }
     });
 });
+//routing to create a new metric
+//call the save1 method
 metricRouter.post('/', function (req, res, next) {
     var dd = req.body.dd;
     if (dd < 10 && dd.toString().length == 1) {
@@ -185,6 +193,8 @@ metricRouter.post('/', function (req, res, next) {
         }
     });
 });
+//routing for modifying: creates another metric to overwrite the old one
+//call the save1 method
 metricRouter.post('/modify', function (req, res, next) {
     var met = new metrics_1.Metric(req.body.modif_date, req.body.modif_quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
@@ -197,14 +207,3 @@ metricRouter.post('/modify', function (req, res, next) {
     });
 });
 app.use('/metric', metricRouter);
-/*dbMet.get(req.body.username, function (err: Error | null, result?: User) {
-  if (!err || result !== undefined) {
-   res.status(409).send("user already exists")
-  } else {
-    let user = new User(req.body.username, req.body.email, req.body.password)
-    dbUser.save(user, function (err: Error | null) {
-      if (err) next(err)
-      else res.status(201).send("user persisted")
-    })
-  }
-})*/
