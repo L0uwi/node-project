@@ -30,9 +30,14 @@ var MetricsHandler = /** @class */ (function () {
         stream.end();
     };
     MetricsHandler.prototype.save1 = function (metric, user, callback) {
-        this.db.put(user + ":" + metric.date, "" + metric.value, function (err) {
-            callback(err);
-        });
+        /*this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
+          callback(err)
+        })*/
+        var stream = level_ws_1.default(this.db);
+        stream.on('error', callback);
+        stream.on('close', callback);
+        stream.write({ key: user + ":" + metric.date, value: metric.value });
+        stream.end();
     };
     MetricsHandler.prototype.del = function (date, username, callback) {
         var key = username + ':' + date;
@@ -86,7 +91,7 @@ var MetricsHandler = /** @class */ (function () {
             var _a = data.key.split(":"), user = _a[0], date = _a[1];
             var value = data.value;
             if (key != data.key) {
-                console.log("LevelDB error: " + data + " does not match key " + key);
+                console.log("LevelDB error: " + data.key + " does not match key " + key);
             }
             else {
                 met = new Metric(date, value);

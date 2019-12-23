@@ -23,16 +23,20 @@ export class MetricsHandler {
     this.db.close()
   }
 
-  public save(key: string, metrics: Metric[], callback: (error: Error | null) => void) {
+
+  //saving method: receive a username and an array of metrics.
+  //The key in the db is based on 'username:date'
+  public save(user: string, metrics: Metric[], callback: (error: Error | null) => void) {
     const stream = WriteStream(this.db)
     stream.on('error', callback)
     stream.on('close', callback)
     metrics.forEach((m: Metric) => {
-      stream.write({ key: `${key}:${m.date}`, value: m.value })
+      stream.write({ key: `${user}:${m.date}`, value: m.value })
     })
     stream.end()
   }
 
+  //second saving method: receive a username and only one metric
   public save1(metric: Metric, user: string, callback: (err: Error | null) => void) {
     /*this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
       callback(err)
@@ -44,6 +48,8 @@ export class MetricsHandler {
     stream.end()
   }
 
+
+  //deleting method: receive a date and a username
   public del(date: string, username: string, callback: (err: Error | null) => void) {
     let key = username + ':' + date
     this.db.del(key, (err: Error | null) => {
@@ -51,6 +57,7 @@ export class MetricsHandler {
     })
   }
 
+  //get method : receive a key (username) and retrieve all the metrics related
   public get1(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
     const stream = this.db.createReadStream()
     var met: Metric[] = []
@@ -72,26 +79,7 @@ export class MetricsHandler {
       })
   }
 
-  /*
-  public get(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
-    const stream = this.db.createReadStream()
-    var met: Metric[] = []
-    stream.on('error', callback)
-      .on('data', (data: any) => {
-        const [user, date] = data.key.split(":")
-        const value = data.value
-        if (key != user) {
-          console.log(`LevelDB error: ${data} does not match key ${key}`)
-        } else {
-          met.push(new Metric(date, value))
-        }
-      })
-      .on('end', (err: Error) => {
-        callback(null, met)
-      })
-  }*/
-
-
+  //second get method: receive a key ('username:date') and retrieve a special metric
   public get2(key: string, callback: (err: Error | null, result?: Metric) => void) {
     const stream = this.db.createReadStream()
     var met: Metric
@@ -109,4 +97,24 @@ export class MetricsHandler {
         callback(null, met)
       })
   }
+
+   /*
+  public get(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
+    const stream = this.db.createReadStream()
+    var met: Metric[] = []
+    stream.on('error', callback)
+      .on('data', (data: any) => {
+        const [user, date] = data.key.split(":")
+        const value = data.value
+        if (key != user) {
+          console.log(`LevelDB error: ${data} does not match key ${key}`)
+        } else {
+          met.push(new Metric(date, value))
+        }
+      })
+      .on('end', (err: Error) => {
+        callback(null, met)
+      })
+  }*/
+  
 }

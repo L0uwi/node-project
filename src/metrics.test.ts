@@ -26,7 +26,7 @@ describe('Metrics', function () {
             })
         })
 
-        it('should save (receiving a key and a metrics array) and get an array of metrics', function (done) {
+        it('should save (receiving a key and a metrics array in parameters) and get an array of metrics', function (done) {
             let metrics: Metric[] = []
             metrics.push(new Metric('12345678', 10))
             metrics.push(new Metric('22112233', 8))
@@ -57,13 +57,12 @@ describe('Metrics', function () {
                 dbMet.get2("1:22112233", function (err: Error | null, result?: Metric) {
                     expect(err).to.be.null
                     expect(result).to.be.undefined                     
-                    
                 })
             })
             done()
         })
 
-        it('should save (receiving one metric and one key) and get one metric', function (done) {
+        it('should save (receiving a key and one metric in parameters) and get one metric', function (done) {
             let metrics: Metric = new Metric("12345", 10)
             let user = "userTest"
             dbMet.save1(metrics, user, function (err: Error | null) {
@@ -76,6 +75,21 @@ describe('Metrics', function () {
                     done()
                 })
             })
+        })
+
+        it('should overwrite the previous metric in the database', function (done) {
+            let metrics: Metric = new Metric("12345", 2)
+            let user = "userTest"
+            dbMet.save1(metrics, user, function (err: Error | null) {
+                dbMet.get2(user+":"+metrics.date, function (err: Error | null, result?: Metric) {
+                    expect(err).to.be.null
+                    expect(result).to.not.be.undefined
+                    if(result)
+                        expect(result.value).to.equal(2),
+                        expect(result.date).to.equal("12345")
+                })
+            })
+            done()
         })
 
         //for delete => save, delete and get again -> if we get nothing it works
