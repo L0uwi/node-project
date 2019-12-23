@@ -42,14 +42,16 @@
       <% } %>
 
     <br><br><br>
+    
     <button class="btn btn-success" id="show-metrics">
       Bring the metrics
     </button>
+  
     <div id="metrics">
         <% if(metrics){ %>
           <hr />
           <br>
-          <h4 style='color:rgb(62, 182, 26);'>Here are the metrics of <%= name %></h4>
+          <h4 style='color:rgb(206, 163, 44);'>Here are the metrics of <%= name %></h4>
           <ul>
               <% metrics.forEach(function(metrics){ %>
                   <li style='color:#0004ff;'> Date : <%= metrics.date %> &nbsp; Quantity : <%= metrics.value %>

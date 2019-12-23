@@ -28,15 +28,20 @@ export class MetricsHandler {
     stream.on('error', callback)
     stream.on('close', callback)
     metrics.forEach((m: Metric) => {
-      stream.write({ key: `metric:${key}:${m.date}`, value: m.value })
+      stream.write({ key: `${key}:${m.date}`, value: m.value })
     })
     stream.end()
   }
 
   public save1(metric: Metric, user: string, callback: (err: Error | null) => void) {
-    this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
+    /*this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
       callback(err)
-    })
+    })*/
+    const stream = WriteStream(this.db)
+    stream.on('error', callback)
+    stream.on('close', callback)
+    stream.write({ key: `${user}:${metric.date}`, value: metric.value })
+    stream.end()
   }
 
   public del(date: string, username: string, callback: (err: Error | null) => void) {
@@ -67,6 +72,7 @@ export class MetricsHandler {
       })
   }
 
+  /*
   public get(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
     const stream = this.db.createReadStream()
     var met: Metric[] = []
@@ -83,7 +89,7 @@ export class MetricsHandler {
       .on('end', (err: Error) => {
         callback(null, met)
       })
-  }
+  }*/
 
 
   public get2(key: string, callback: (err: Error | null, result?: Metric) => void) {
@@ -94,7 +100,7 @@ export class MetricsHandler {
         const [user, date] = data.key.split(":")
         const value = data.value
         if (key != data.key) {
-          console.log(`LevelDB error: ${data} does not match key ${key}`)
+          console.log(`LevelDB error: ${data.key} does not match key ${key}`)
         } else {
           met = new Metric(date, value)
         }

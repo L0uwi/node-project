@@ -21,7 +21,7 @@ app.get('/hello/:name', function (req, res) {
     res.render('index.ejs', { name: req.params.name });
 });
 app.get('/metrics/:id', function (req, res) {
-    dbMet.get(req.params.id, function (err, result) {
+    dbMet.get1(req.params.id, function (err, result) {
         if (err)
             throw err;
         res.json(result);
@@ -181,20 +181,17 @@ metricRouter.post('/', function (req, res, next) {
             next(err);
         else {
             //res.status(201).send("metric persisted");
-            console.log("user persisted");
             res.redirect('/metric/' + req.session.user.username);
         }
     });
 });
 metricRouter.post('/modify', function (req, res, next) {
-    console.log("Alors :" + req.body.modif_date + req.body.modif_quantity);
     var met = new metrics_1.Metric(req.body.modif_date, req.body.modif_quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
         if (err)
             next(err);
         else {
             //res.status(201).send("metric persisted");
-            console.log("user persisted");
             res.redirect('/metric/' + req.session.user.username);
         }
     });

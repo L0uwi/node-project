@@ -25,7 +25,7 @@ var MetricsHandler = /** @class */ (function () {
         stream.on('error', callback);
         stream.on('close', callback);
         metrics.forEach(function (m) {
-            stream.write({ key: "metric:" + key + ":" + m.date, value: m.value });
+            stream.write({ key: key + ":" + m.date, value: m.value });
         });
         stream.end();
     };
@@ -60,24 +60,24 @@ var MetricsHandler = /** @class */ (function () {
             callback(null, met);
         });
     };
-    MetricsHandler.prototype.get = function (key, callback) {
-        var stream = this.db.createReadStream();
-        var met = [];
-        stream.on('error', callback)
-            .on('data', function (data) {
-            var _a = data.key.split(":"), user = _a[0], date = _a[1];
-            var value = data.value;
-            if (key != user) {
-                console.log("LevelDB error: " + data + " does not match key " + key);
-            }
-            else {
-                met.push(new Metric(date, value));
-            }
+    /*
+    public get(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
+      const stream = this.db.createReadStream()
+      var met: Metric[] = []
+      stream.on('error', callback)
+        .on('data', (data: any) => {
+          const [user, date] = data.key.split(":")
+          const value = data.value
+          if (key != user) {
+            console.log(`LevelDB error: ${data} does not match key ${key}`)
+          } else {
+            met.push(new Metric(date, value))
+          }
         })
-            .on('end', function (err) {
-            callback(null, met);
-        });
-    };
+        .on('end', (err: Error) => {
+          callback(null, met)
+        })
+    }*/
     MetricsHandler.prototype.get2 = function (key, callback) {
         var stream = this.db.createReadStream();
         var met;

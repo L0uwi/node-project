@@ -24,7 +24,7 @@ app.get('/hello/:name', (req: any, res: any) => {
 })
 
 app.get('/metrics/:id', (req: any, res: any) => {
-  dbMet.get(req.params.id, (err: Error | null, result?: any) => {
+  dbMet.get1(req.params.id, (err: Error | null, result?: any) => {
     if (err) throw err
     res.json(result)
   })
@@ -195,7 +195,6 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
     if (err) next(err)
     else {
       //res.status(201).send("metric persisted");
-      console.log("user persisted")
       res.redirect('/metric/' + req.session.user.username)
     }
   })
@@ -203,13 +202,11 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
 
 
 metricRouter.post('/modify', (req: any, res: any, next: any) => {
-  console.log("Alors :"+req.body.modif_date+req.body.modif_quantity)
   let met = new Metric(req.body.modif_date, req.body.modif_quantity)
   dbMet.save1(met, req.session.user.username, function (err: Error | null) {
     if (err) next(err)
     else {
       //res.status(201).send("metric persisted");
-      console.log("user persisted")
       res.redirect('/metric/' + req.session.user.username)
     }
   })
