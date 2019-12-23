@@ -1,14 +1,13 @@
-# Lab 3 Storage
+# Nodes JS & DevOps project
 
 ## Introduction
 
-The basic Node.js application on TypeScript.
+This is a combined repository for our Node JS and DevOps project
 
 ## Installing
 
 ```bash
-git clone https://github.com/sergkudinov/ece-nodejs-3-leveldb.git
-cd ece-nodejs-3-leveldb
+git clone 
 npm install
 ```
 
@@ -25,3 +24,7 @@ npm run dev
 ```
 
 ## Contributors
+This project was developped by :
+    - Louis CAUQUELIN
+    - Eloi ALARDET
+    from TD SI 03

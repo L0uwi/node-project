@@ -21,7 +21,6 @@ var MetricsHandler = /** @class */ (function () {
     function MetricsHandler(dbPath) {
         this.db = leveldb_1.LevelDB.open(dbPath);
     }
-    //Closing the db
     MetricsHandler.prototype.closeDB = function () {
         this.db.close();
     };
@@ -60,11 +59,8 @@ var MetricsHandler = /** @class */ (function () {
     //get method : receive a key (username) and retrieve all the metrics related
     MetricsHandler.prototype.get1 = function (key, callback) {
         var stream = this.db.createReadStream();
-        //Creating new variable of Metric type to return values
         var met = [];
-        //Definition of the different cases 
         stream.on('error', callback)
-            //on reading data..
             .on('data', function (data) {
             var _a = data.key.split(":"), user = _a[0], date = _a[1];
             var value = data.value;
@@ -97,7 +93,6 @@ var MetricsHandler = /** @class */ (function () {
             }
         })
             .on('end', function (err) {
-            //Once finished, return value in callback
             callback(null, met);
         });
     };
