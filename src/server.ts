@@ -47,6 +47,8 @@ app.listen(port, (err: Error) => {
   console.log(`Server is running on http://localhost:${port}`)
 })
 
+
+
 //Open a levelDB Session, see documentation: https://github.com/maxogden/node-level-session
 import session = require('express-session')
 import levelSession = require('level-session-store')
@@ -64,6 +66,9 @@ app.use(session({
 import { UserHandler, User } from './user'
 const dbUser: UserHandler = new UserHandler('./db/users')
 const authRouter = express.Router()
+
+app.use(authRouter)
+
 
 //source: https://medium.com/@kongruksiamza/nodejs-validate-data-and-alert-message-in-ejs-template-engine-f2844a4cb255
 const {check, validationResult} = require('express-validator');
@@ -97,6 +102,7 @@ authRouter.post('/login', (req: any, res: any, next: any) => {
     }
   })
 })
+
 authRouter.post('/signup', [
   check('mail','email is required').isEmail(),
   check('password','password has to be longer than five characters').isLength({ min: 5 })], (req: any, res: any, next: any) => {
@@ -129,21 +135,22 @@ authRouter.post('/signup', [
       location: 'body' })   
     } 
 
-    if (!resu.isEmpty()) {
-      res.render('signup',{err: errors})
+    if (!resu.isEmpty() || errors.length !=0) {
+      
+      res.status(409).render('signup',{err: errors})
+      
      }else {
       //Else, we add it to the database
-      let user = new User(req.body.username, req.body.email, req.body.password)
+      let user = new User(req.body.username, req.body.mail, req.body.password)
       dbUser.save(user, function (err: Error | null) {
         if (err) next(err)
         //Respond that the add is successfull
-        else res.redirect('/login')
+        else res.status(200).redirect('/login')
       })
     }
   })
 })
 
-app.use(authRouter)
 
 const userRouter = express.Router()
 
@@ -188,3 +195,5 @@ const authCheck = function (req: any, res: any, next: any) {
 app.get('/', authCheck, (req: any, res: any) => {
   res.render('index', { name: req.session.username })
 })
+
+module.exports = app;

@@ -58,6 +58,7 @@ app.use(session({
 var user_1 = require("./user");
 var dbUser = new user_1.UserHandler('./db/users');
 var authRouter = express.Router();
+app.use(authRouter);
 //source: https://medium.com/@kongruksiamza/nodejs-validate-data-and-alert-message-in-ejs-template-engine-f2844a4cb255
 var _a = require('express-validator'), check = _a.check, validationResult = _a.validationResult;
 //Routing to login
@@ -117,80 +118,22 @@ authRouter.post('/signup', [
                 param: 'username',
                 location: 'body' });
         }
-        if (!resu.isEmpty()) {
-            res.render('signup', { err: errors });
+        if (!resu.isEmpty() || errors.length != 0) {
+            res.status(409).render('signup', { err: errors });
         }
         else {
             //Else, we add it to the database
-            var user = new user_1.User(req.body.username, req.body.email, req.body.password);
+            var user = new user_1.User(req.body.username, req.body.mail, req.body.password);
             dbUser.save(user, function (err) {
                 if (err)
                     next(err);
                 //Respond that the add is successfull
                 else
-                    res.redirect('/login');
+                    res.status(200).redirect('/login');
             });
         }
     });
 });
-/*
-authRouter.post('/signup', [
-  check('mail','email is required').isEmail(),
-  check('password','password has to be longer than five characters').isLength({ min: 5 })],
-  (req: any, res: any, next: any) => {
-  dbUser.db.get(`user:${req.body.username}`, function (err: Error, data: any){
-    
-    if (err) next(err)
-    
-     //check validate data
-     const resu= validationResult(req);
-     var errors = resu.errors;
-
-     if(!dbUser.confirmMail(req.body.mail,req.body.confirm_mail)){
-      errors.push({ value: 'confirm mail',
-      msg: 'Mail and confirm mail are not identical',
-      param: 'mail',
-      location: 'body' })
-     }
-
-     if(!dbUser.confirmPassword(req.body.password,req.body.confirm_password)){
-      errors.push({ value: 'confirm password',
-      msg: 'Password and confirm password are not identical',
-      param: 'password',
-      location: 'body' })
-     }
-
-     if (data !== undefined) {
-      errors.push({ value: 'exists',
-      msg: 'This user already exists !',
-      param: 'username',
-      location: 'body' })
-    }
-     
-
-     if (!resu.isEmpty()) {
-       res.render('signup',{err: errors})
-      }
-
-      else {
-        //Else, we add it to the database
-        let user = new User(req.body.username, req.body.email, req.body.password)
-        dbUser.save(user, function (err: Error | null) {
-          if (err) next(err)
-          //Respond that the add is successfull
-          else {
-            res.status(201).send("user persisted")
-            res.redirect('/login')
-          }
-
-        })
-      }
-
-    
-  })
-})
-*/
-app.use(authRouter);
 var userRouter = express.Router();
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.post('/', function (req, res, next) {
@@ -236,3 +179,4 @@ var authCheck = function (req, res, next) {
 app.get('/', authCheck, function (req, res) {
     res.render('index', { name: req.session.username });
 });
+module.exports = app;

@@ -51,6 +51,10 @@ export class UserHandler {
         this.db = LevelDB.open(path)
     }
 
+    public closeDB(){
+        this.db.close()
+      }
+
     //Return data from db using the given username (used in server.ts for the connexion)
     public get(username: string, callback: (err: Error | null, result?: User) => void) {
         this.db.get(`user:${username}`, function (err: Error, data: any) {

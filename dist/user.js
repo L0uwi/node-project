@@ -42,6 +42,9 @@ var UserHandler = /** @class */ (function () {
     function UserHandler(path) {
         this.db = leveldb_1.LevelDB.open(path);
     }
+    UserHandler.prototype.closeDB = function () {
+        this.db.close();
+    };
     //Return data from db using the given username (used in server.ts for the connexion)
     UserHandler.prototype.get = function (username, callback) {
         this.db.get("user:" + username, function (err, data) {
