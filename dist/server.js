@@ -115,23 +115,33 @@ var authCheck = function (req, res, next) {
         res.redirect('/login');
 };
 app.get('/', authCheck, function (req, res) {
-    res.render('index', { metrics: null, name: req.session.username });
+    res.render('index', { metrics: null, name: req.session.username, modify: null });
 });
 var metricRouter = express.Router();
 metricRouter.get('/:username', function (req, res, next) {
-    console.log("user router get method\n");
     dbMet.get1(req.params.username, function (err, result) {
         if (err || result === undefined) {
             res.status(404).send("user not found");
         }
         else {
             //res.status(200).json(result);
-            res.render('index', { metrics: result, name: req.session.user.username });
+            res.render('index', { metrics: result, name: req.session.user.username, modify: null });
+        }
+    });
+});
+metricRouter.get('/modify/:date', function (req, res, next) {
+    var key = req.session.user.username + ":" + req.params.date;
+    console.log("ici c'est la" + key);
+    dbMet.get2(key, function (err, result) {
+        if (err || result === undefined) {
+            res.status(404).send("user not found");
+        }
+        else {
+            res.render('index', { modify: result, name: req.session.user.username, metrics: null });
         }
     });
 });
 metricRouter.get('/delete/:date', function (req, res, next) {
-    console.log("on est all\n");
     dbMet.del(req.params.date, req.session.user.username, function (err) {
         if (err)
             next(err);
@@ -149,7 +159,7 @@ metricRouter.get('/', function (req, res, next) {
         }
         else {
             //res.status(200).json(result)
-            res.render('index', { metrics: result, name: req.session.user.username });
+            res.render('index', { metrics: result, modify: null, name: req.session.user.username });
         }
     });
 });
@@ -166,7 +176,19 @@ metricRouter.post('/', function (req, res, next) {
     req.session.user.username;
     var date = dd + '-' + mm + '-' + yyyy;
     var met = new metrics_1.Metric(date, req.body.quantity);
-    console.log(met.date, met.value);
+    dbMet.save1(met, req.session.user.username, function (err) {
+        if (err)
+            next(err);
+        else {
+            //res.status(201).send("metric persisted");
+            console.log("user persisted");
+            res.redirect('/metric/' + req.session.user.username);
+        }
+    });
+});
+metricRouter.post('/modify', function (req, res, next) {
+    console.log("Alors :" + req.body.modif_date + req.body.modif_quantity);
+    var met = new metrics_1.Metric(req.body.modif_date, req.body.modif_quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
         if (err)
             next(err);

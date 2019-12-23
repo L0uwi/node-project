@@ -8,6 +8,7 @@
 <body class="container">
   <div class="col-md-6 col-md-offset-3">
     <h1>Hello <%= name %></h1>
+    <% if(!modify){ %>
     <form action="/metric" method="post">
       <div id="form" >
         <div class="form-group">
@@ -23,6 +24,23 @@
         <button class="btn btn-success" type="submit" value="Add">Add the metric</button>
       </div>
     </form>
+    <% } %>
+    <% if(modify){ %>
+      <form action="/metric/modify" method="post">
+        <div id="form" >
+          <div class="form-group">
+            <label for="form_modif_metric_quantity">Quantity of water (in glasses)</label>
+            <input id="form_modif_metric_quantity" min="0" size="2" type="number" value="<%= modify.value %>" name="modif_quantity" placeholder="<%= modify.value %>" />
+          </div>
+          <div class="form-group">
+            <label for="form_modif_metric_date">Date</label>
+            <input id="form_modif_metric_date" type="text"  value="<%= modify.date %>" name="modif_date"  placeholder="<%= modify.date %>" />
+          </div>
+          <button class="btn btn-warning" type="submit" value="Add">Modify the metric</button>
+        </div>
+      </form>
+      <% } %>
+
     <br><br><br>
     <button class="btn btn-success" id="show-metrics">
       Bring the metrics
@@ -34,8 +52,10 @@
           <h4 style='color:rgb(62, 182, 26);'>Here are the metrics of <%= name %></h4>
           <ul>
               <% metrics.forEach(function(metrics){ %>
-                  <li style='color:#0004ff;'><%= metrics.date %> <%= metrics.value %>
-                    <button class="btn btn-outline-danger btn-sm" href="/metric/delete/<%= metrics.date %>" onClick='document.location.href="/metric/delete/<%= metrics.date %>"'>X</button></li>
+                  <li style='color:#0004ff;'> Date : <%= metrics.date %> &nbsp; Quantity : <%= metrics.value %>
+                    <button class="btn btn-danger btn-sm" href="/metric/delete/<%= metrics.date %>" onClick='document.location.href="/metric/delete/<%= metrics.date %>"'>X</button>
+                    <button class="btn btn-warning btn-sm" href="/metric/modify/<%= metrics.date %>" onClick='document.location.href="/metric/modify/<%= metrics.date %>"'>Modifier</button>
+                  </li>
               <% });%>
           </ul>
       <% } %>

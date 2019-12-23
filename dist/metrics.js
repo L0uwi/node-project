@@ -65,13 +65,31 @@ var MetricsHandler = /** @class */ (function () {
         var met = [];
         stream.on('error', callback)
             .on('data', function (data) {
-            var _a = data.key.split(":"), _ = _a[0], k = _a[1], timestamp = _a[2];
+            var _a = data.key.split(":"), user = _a[0], date = _a[1];
             var value = data.value;
-            if (key != k) {
+            if (key != user) {
                 console.log("LevelDB error: " + data + " does not match key " + key);
             }
             else {
-                met.push(new Metric(timestamp, value));
+                met.push(new Metric(date, value));
+            }
+        })
+            .on('end', function (err) {
+            callback(null, met);
+        });
+    };
+    MetricsHandler.prototype.get2 = function (key, callback) {
+        var stream = this.db.createReadStream();
+        var met;
+        stream.on('error', callback)
+            .on('data', function (data) {
+            var _a = data.key.split(":"), user = _a[0], date = _a[1];
+            var value = data.value;
+            if (key != data.key) {
+                console.log("LevelDB error: " + data + " does not match key " + key);
+            }
+            else {
+                met = new Metric(date, value);
             }
         })
             .on('end', function (err) {

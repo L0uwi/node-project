@@ -123,7 +123,7 @@ const authCheck = function (req: any, res: any, next: any) {
 }
 
 app.get('/', authCheck, (req: any, res: any) => {
-  res.render('index', { metrics: null, name: req.session.username })
+  res.render('index', { metrics: null, name: req.session.username, modify: null })
 })
 
 
@@ -131,20 +131,31 @@ const metricRouter = express.Router()
 
 
 metricRouter.get('/:username', (req: any, res: any, next: any) => {
-  console.log("user router get method\n")
   dbMet.get1(req.params.username, function (err: Error | null, result?: Metric[]) {
     if (err || result === undefined) {
       res.status(404).send("user not found")
     }
     else {
       //res.status(200).json(result);
-      res.render('index', { metrics: result, name: req.session.user.username })
+      res.render('index', { metrics: result, name: req.session.user.username, modify: null })
+    }
+  })
+})
+
+metricRouter.get('/modify/:date', (req:any, res:any, next:any) => {
+  let key = req.session.user.username+":"+req.params.date
+  console.log("ici c'est la"+key)
+  dbMet.get2(key, function (err: Error | null, result?: Metric) {
+    if (err || result === undefined) {
+      res.status(404).send("user not found")
+    }
+    else{
+      res.render('index', { modify: result, name: req.session.user.username, metrics: null })
     }
   })
 })
 
 metricRouter.get('/delete/:date', (req: any, res: any, next: any) => {
-  console.log("on est all\n")
   dbMet.del(req.params.date, req.session.user.username, function (err: Error | null) {
     if (err) next(err)
     else {
@@ -162,7 +173,7 @@ metricRouter.get('/', (req: any, res: any, next: any) => {
       res.status(404).send("user not found")
     } else {
       //res.status(200).json(result)
-      res.render('index', { metrics: result, name: req.session.user.username })
+      res.render('index', { metrics: result, modify: null, name: req.session.user.username })
     }
   })
 })
@@ -180,7 +191,6 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
   req.session.user.username
   var date = dd + '-' + mm + '-' + yyyy;
   let met = new Metric(date, req.body.quantity)
-  console.log(met.date, met.value)
   dbMet.save1(met, req.session.user.username, function (err: Error | null) {
     if (err) next(err)
     else {
@@ -188,9 +198,23 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
       console.log("user persisted")
       res.redirect('/metric/' + req.session.user.username)
     }
-
   })
 })
+
+
+metricRouter.post('/modify', (req: any, res: any, next: any) => {
+  console.log("Alors :"+req.body.modif_date+req.body.modif_quantity)
+  let met = new Metric(req.body.modif_date, req.body.modif_quantity)
+  dbMet.save1(met, req.session.user.username, function (err: Error | null) {
+    if (err) next(err)
+    else {
+      //res.status(201).send("metric persisted");
+      console.log("user persisted")
+      res.redirect('/metric/' + req.session.user.username)
+    }
+  })
+})
+
 
 app.use('/metric', metricRouter)
 
