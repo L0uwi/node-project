@@ -8,8 +8,8 @@ var leveldb_1 = require("./leveldb");
 var level_ws_1 = __importDefault(require("level-ws"));
 //Definition of the Metric class (used line 37 below)
 var Metric = /** @class */ (function () {
-    function Metric(ts, v) {
-        this.timestamp = ts;
+    function Metric(dt, v) {
+        this.date = dt;
         this.value = v;
     }
     return Metric;
@@ -25,23 +25,40 @@ var MetricsHandler = /** @class */ (function () {
     MetricsHandler.prototype.closeDB = function () {
         this.db.close();
     };
-    //saving to the DB
-    MetricsHandler.prototype.save = function (key, metrics, callback) {
-        //Opening a stream to write in the db
+    //saving method: receive a username and an array of metrics.
+    //The key in the db is based on 'username:date'
+    MetricsHandler.prototype.save = function (user, metrics, callback) {
         var stream = level_ws_1.default(this.db);
         //Checking for errors
         stream.on('error', callback);
         stream.on('close', callback);
         //Writting the metrics inside the db
         metrics.forEach(function (m) {
-            stream.write({ key: "metric:" + key + ":" + m.timestamp, value: m.value });
+            stream.write({ key: user + ":" + m.date, value: m.value });
         });
         //Closing stream
         stream.end();
     };
-    //Reading from the db
-    MetricsHandler.prototype.get = function (key, callback) {
-        //Opening the reading stream
+    //second saving method: receive a username and only one metric
+    MetricsHandler.prototype.save1 = function (metric, user, callback) {
+        /*this.db.put(`${user}:${metric.date}`, `${metric.value}`, (err: Error | null) => {
+          callback(err)
+        })*/
+        var stream = level_ws_1.default(this.db);
+        stream.on('error', callback);
+        stream.on('close', callback);
+        stream.write({ key: user + ":" + metric.date, value: metric.value });
+        stream.end();
+    };
+    //deleting method: receive a date and a username
+    MetricsHandler.prototype.del = function (date, username, callback) {
+        var key = username + ':' + date;
+        this.db.del(key, function (err) {
+            callback(err);
+        });
+    };
+    //get method : receive a key (username) and retrieve all the metrics related
+    MetricsHandler.prototype.get1 = function (key, callback) {
         var stream = this.db.createReadStream();
         //Creating new variable of Metric type to return values
         var met = [];
@@ -49,15 +66,34 @@ var MetricsHandler = /** @class */ (function () {
         stream.on('error', callback)
             //on reading data..
             .on('data', function (data) {
-            var _a = data.key.split(":"), _ = _a[0], k = _a[1], timestamp = _a[2];
+            var _a = data.key.split(":"), user = _a[0], date = _a[1];
             var value = data.value;
-            //if key asked different from k, no data found error
-            if (key != k) {
-                console.log("LevelDB error: " + data + " does not match key " + key);
+            if (key != user) {
+                console.log("LevelDB error: " + user + " does not match key " + key);
             }
             else {
-                //Else, we store the data in met variable
-                met.push(new Metric(timestamp, value));
+                met.push(new Metric(date, value));
+            }
+            console.log(data.key, '=', data.value);
+        })
+            .on('end', function (err) {
+            console.log("\n" + met);
+            callback(null, met);
+        });
+    };
+    //second get method: receive a key ('username:date') and retrieve a special metric
+    MetricsHandler.prototype.get2 = function (key, callback) {
+        var stream = this.db.createReadStream();
+        var met;
+        stream.on('error', callback)
+            .on('data', function (data) {
+            var _a = data.key.split(":"), user = _a[0], date = _a[1];
+            var value = data.value;
+            if (key != data.key) {
+                console.log("LevelDB error: " + data.key + " does not match key " + key);
+            }
+            else {
+                met = new Metric(date, value);
             }
         })
             .on('end', function (err) {
