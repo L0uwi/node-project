@@ -65,7 +65,7 @@ const authRouter = express.Router()
 
 app.use(authRouter)
 
-
+  
 //source: https://medium.com/@kongruksiamza/nodejs-validate-data-and-alert-message-in-ejs-template-engine-f2844a4cb255
 const {check, validationResult} = require('express-validator');
 //Routing to login
@@ -88,7 +88,11 @@ authRouter.get('/logout', (req: any, res: any) => {
 //Function used to redirect to login if username incorrect or connect if ok
 authRouter.post('/login', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-    if (err) next(err)
+    /*if (err) 
+    {
+      next(err)
+      res.redirect('/login')
+    }*/
     if (result === undefined || !result.validatePassword(req.body.password)) {
       res.redirect('/login')
     } else {
@@ -170,14 +174,17 @@ userRouter.post('/', (req: any, res: any, next: any) => {
 })
 
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
-userRouter.delete('/:username', (req: any, res: any, next: any) => {
+userRouter.get('/delete', (req: any, res: any, next: any) => {
   //Uses User get function (see user.ts line 55)
-  dbUser.delete(req.params.username, function (err: Error | null, result?: User) {
+  let username = req.session.user.username
+  delete req.session.loggedIn
+  delete req.session.user
+  dbUser.delete(username, function (err: Error | null, result?: User) {
     if (!err) {
-     res.status(200).send("user successfully deleted")
+     //res.status(200).send("user successfully deleted")
+     res.redirect('/login')
     } else {
       res.status(400).send("an error occured")
-      
     }
   })
 })

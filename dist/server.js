@@ -73,8 +73,11 @@ authRouter.get('/logout', function (req, res) {
 //Function used to redirect to login if username incorrect or connect if ok
 authRouter.post('/login', function (req, res, next) {
     dbUser.get(req.body.username, function (err, result) {
-        if (err)
-            next(err);
+        /*if (err)
+        {
+          next(err)
+          res.redirect('/login')
+        }*/
         if (result === undefined || !result.validatePassword(req.body.password)) {
             res.redirect('/login');
         }
@@ -152,11 +155,15 @@ userRouter.post('/', function (req, res, next) {
     });
 });
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
-userRouter.delete('/:username', function (req, res, next) {
+userRouter.get('/delete', function (req, res, next) {
     //Uses User get function (see user.ts line 55)
-    dbUser.delete(req.params.username, function (err, result) {
+    var username = req.session.user.username;
+    delete req.session.loggedIn;
+    delete req.session.user;
+    dbUser.delete(username, function (err, result) {
         if (!err) {
-            res.status(200).send("user successfully deleted");
+            //res.status(200).send("user successfully deleted")
+            res.redirect('/login');
         }
         else {
             res.status(400).send("an error occured");

@@ -65,7 +65,7 @@ var UserHandler = /** @class */ (function () {
     };
     //Delete data from db
     UserHandler.prototype.delete = function (username, callback) {
-        var key = username;
+        var key = "user:" + username;
         this.db.del(key, function (err) {
             callback(err);
         });

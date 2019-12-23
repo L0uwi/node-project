@@ -77,7 +77,7 @@ export class UserHandler {
 
     //Delete data from db
     public delete(username: string, callback: (err: Error | null) => void) {
-       let key = username
+       let key = "user:"+username
         this.db.del(key, (err: Error | null) => {  
             callback(err)
         })

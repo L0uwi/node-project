@@ -175,7 +175,7 @@ describe('Signup', function () {
 
         it('should delete a user successfully', function(done) {
             chai.request(app)
-            .delete('/user/auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc')
+            .delete('/user/delete/auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc')
             .end(function(err, res) {
                 chai.expect(res).to.have.status("200");
             });
