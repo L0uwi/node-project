@@ -14,6 +14,10 @@ Then, in order to install all the dependencies :
 ```bash 
 npm install
 ```
+After this, you will have to create a folder for your database, so run :
+```bash 
+mkdir db
+```
 
 ## Running test
 
