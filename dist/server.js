@@ -99,23 +99,29 @@ authRouter.post('/signup', [
         var resu = validationResult(req);
         var errors = resu.errors;
         if (!dbUser.confirmMail(req.body.mail, req.body.confirm_mail)) {
-            errors.push({ value: 'confirm mail',
+            errors.push({
+                value: 'confirm mail',
                 msg: 'Mail and confirm mail are not identical',
                 param: 'mail',
-                location: 'body' });
+                location: 'body'
+            });
         }
         if (!dbUser.confirmPassword(req.body.password, req.body.confirm_password)) {
-            errors.push({ value: 'confirm password',
+            errors.push({
+                value: 'confirm password',
                 msg: 'Password and confirm password are not identical',
                 param: 'password',
-                location: 'body' });
+                location: 'body'
+            });
         }
         //If return value different from undifined, the user already exists
         if (!err || result !== undefined) {
-            errors.push({ value: 'exists',
+            errors.push({
+                value: 'exists',
                 msg: 'This user already exists !',
                 param: 'username',
-                location: 'body' });
+                location: 'body'
+            });
         }
         if (!resu.isEmpty() /*|| errors.length !=0*/) {
             res.status(409).render('signup', { err: errors });
@@ -156,7 +162,6 @@ userRouter.post('/', function (req, res, next) {
 });
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.get('/delete', function (req, res, next) {
-    console.log("On rentre ici");
     var username = req.session.user.username;
     delete req.session.loggedIn;
     delete req.session.user;
@@ -172,7 +177,6 @@ userRouter.get('/delete', function (req, res, next) {
 });
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.get('/delete/:username', function (req, res, next) {
-    console.log("on devrait rentrer ici !");
     var username = req.params.username;
     delete req.session.loggedIn;
     delete req.session.user;
@@ -265,7 +269,6 @@ metricRouter.get('/', function (req, res, next) {
 //routing to create a new metric
 //call the save1 method
 metricRouter.post('/', function (req, res, next) {
-    console.log(req.body.date);
     /*var dd = req.body.dd;
     if (dd < 10 && dd.toString().length == 1) {
       dd = '0' + dd;
@@ -277,6 +280,7 @@ metricRouter.post('/', function (req, res, next) {
     var yyyy = req.body.yyyy
     req.session.user.username
     var date = dd + '-' + mm + '-' + yyyy;*/
+    console.log(req.body.date);
     var met = new metrics_1.Metric(req.body.date, req.body.quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
         if (err)

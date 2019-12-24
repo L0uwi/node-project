@@ -65,9 +65,9 @@ const authRouter = express.Router()
 
 app.use(authRouter)
 
-  
+
 //source: https://medium.com/@kongruksiamza/nodejs-validate-data-and-alert-message-in-ejs-template-engine-f2844a4cb255
-const {check, validationResult} = require('express-validator');
+const { check, validationResult } = require('express-validator');
 //Routing to login
 authRouter.get('/login', (req: any, res: any) => {
   res.render('login')
@@ -75,7 +75,7 @@ authRouter.get('/login', (req: any, res: any) => {
 
 //Routing to signup
 authRouter.get('/signup', (req: any, res: any) => {
-  res.render('signup',{err: null})
+  res.render('signup', { err: null })
 })
 
 //Routing to logout
@@ -105,52 +105,58 @@ authRouter.post('/login', (req: any, res: any, next: any) => {
 })
 
 authRouter.post('/signup', [
-  check('mail','email is required').isEmail(),
-  check('password','password has to be longer than five characters').isLength({ min: 5 })], (req: any, res: any, next: any) => {
-  //Uses User get function (see user.ts line 55)
-  dbUser.get(req.body.username, function (err: Error | null, result?: User) {
+  check('mail', 'email is required').isEmail(),
+  check('password', 'password has to be longer than five characters').isLength({ min: 5 })], (req: any, res: any, next: any) => {
+    //Uses User get function (see user.ts line 55)
+    dbUser.get(req.body.username, function (err: Error | null, result?: User) {
 
-    //check validate data
-    const resu= validationResult(req);
-    var errors = resu.errors;
+      //check validate data
+      const resu = validationResult(req);
+      var errors = resu.errors;
 
-    if(!dbUser.confirmMail(req.body.mail,req.body.confirm_mail)){
-     errors.push({ value: 'confirm mail',
-     msg: 'Mail and confirm mail are not identical',
-     param: 'mail',
-     location: 'body' })
-    }
+      if (!dbUser.confirmMail(req.body.mail, req.body.confirm_mail)) {
+        errors.push({
+          value: 'confirm mail',
+          msg: 'Mail and confirm mail are not identical',
+          param: 'mail',
+          location: 'body'
+        })
+      }
 
-    if(!dbUser.confirmPassword(req.body.password,req.body.confirm_password)){
-     errors.push({ value: 'confirm password',
-     msg: 'Password and confirm password are not identical',
-     param: 'password',
-     location: 'body' })
-    }
+      if (!dbUser.confirmPassword(req.body.password, req.body.confirm_password)) {
+        errors.push({
+          value: 'confirm password',
+          msg: 'Password and confirm password are not identical',
+          param: 'password',
+          location: 'body'
+        })
+      }
 
-  //If return value different from undifined, the user already exists
-    if (!err || result !== undefined) {
-      errors.push({ value: 'exists',
-      msg: 'This user already exists !',
-      param: 'username',
-      location: 'body' })   
-    } 
+      //If return value different from undifined, the user already exists
+      if (!err || result !== undefined) {
+        errors.push({
+          value: 'exists',
+          msg: 'This user already exists !',
+          param: 'username',
+          location: 'body'
+        })
+      }
 
-    if (!resu.isEmpty() /*|| errors.length !=0*/) {
-      
-      res.status(409).render('signup',{err: errors})
-      
-     }else {
-      //Else, we add it to the database
-      let user = new User(req.body.username, req.body.mail, req.body.password)
-      dbUser.save(user, function (err: Error | null) {
-        if (err) next(err)
-        //Respond that the add is successfull
-        else res.status(200).redirect('/login')
-      })
-    }
+      if (!resu.isEmpty() /*|| errors.length !=0*/) {
+
+        res.status(409).render('signup', { err: errors })
+
+      } else {
+        //Else, we add it to the database
+        let user = new User(req.body.username, req.body.mail, req.body.password)
+        dbUser.save(user, function (err: Error | null) {
+          if (err) next(err)
+          //Respond that the add is successfull
+          else res.status(200).redirect('/login')
+        })
+      }
+    })
   })
-})
 
 
 const userRouter = express.Router()
@@ -158,7 +164,7 @@ const userRouter = express.Router()
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.post('/', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, function (err: Error | null, result?: User) {
-  //If return value different from undifined, the user already exists
+    //If return value different from undifined, the user already exists
     if (!err || result !== undefined) {
       res.status(409).send("user already exists")
     } else {
@@ -180,8 +186,8 @@ userRouter.get('/delete', (req: any, res: any, next: any) => {
   delete req.session.user
   dbUser.delete(username, function (err: Error | null, result?: User) {
     if (!err) {
-     res.status(200).redirect('/login')//send("user successfully deleted")
-     //res.redirect('/login')
+      res.status(200).redirect('/login')//send("user successfully deleted")
+      //res.redirect('/login')
     } else {
       res.status(400).send("an error occured")
     }
@@ -195,8 +201,8 @@ userRouter.get('/delete/:username', (req: any, res: any, next: any) => {
   delete req.session.user
   dbUser.delete(username, function (err: Error | null, result?: User) {
     if (!err) {
-     res.status(200).redirect('/login')//send("user successfully deleted")
-     //res.redirect('/login')
+      res.status(200).redirect('/login')//send("user successfully deleted")
+      //res.redirect('/login')
     } else {
       res.status(400).send("an error occured")
     }
@@ -246,14 +252,14 @@ metricRouter.get('/:username', (req: any, res: any, next: any) => {
 
 //routing method to get the modifying metric and fill the form with its data
 //calls the get2 method
-metricRouter.get('/modify/:date', (req:any, res:any, next:any) => {
-  let key = req.session.user.username+":"+req.params.date
-  console.log("ici c'est la"+key)
+metricRouter.get('/modify/:date', (req: any, res: any, next: any) => {
+  let key = req.session.user.username + ":" + req.params.date
+  console.log("ici c'est la" + key)
   dbMet.get2(key, function (err: Error | null, result?: Metric) {
     if (err || result === undefined) {
       res.status(404).send("user not found")
     }
-    else{
+    else {
       res.render('index', { modify: result, name: req.session.user.username, metrics: null })
     }
   })
@@ -267,7 +273,7 @@ metricRouter.get('/delete/:date', (req: any, res: any, next: any) => {
     else {
       //res.status(201).send("metric persisted");
       console.log("metric deleted")
-      res.redirect('/metric/'+req.session.user.username)
+      res.redirect('/metric/' + req.session.user.username)
     }
   })
 })
@@ -288,7 +294,6 @@ metricRouter.get('/', (req: any, res: any, next: any) => {
 //routing to create a new metric
 //call the save1 method
 metricRouter.post('/', (req: any, res: any, next: any) => {
-  console.log(req.body.date)
   /*var dd = req.body.dd;
   if (dd < 10 && dd.toString().length == 1) {
     dd = '0' + dd;
@@ -300,6 +305,7 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
   var yyyy = req.body.yyyy
   req.session.user.username
   var date = dd + '-' + mm + '-' + yyyy;*/
+  console.log(req.body.date)
   let met = new Metric(req.body.date, req.body.quantity)
   dbMet.save1(met, req.session.user.username, function (err: Error | null) {
     if (err) next(err)
@@ -308,6 +314,7 @@ metricRouter.post('/', (req: any, res: any, next: any) => {
       res.redirect('/metric/' + req.session.user.username)
     }
   })
+
 })
 
 
