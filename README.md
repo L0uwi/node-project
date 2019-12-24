@@ -37,8 +37,8 @@ You can try the app with an already existing account !
     | Email | barney@gmail.com |   
     | Password | waitforit |   
 
-| Caracteristics  | Information |
-| ------------- | ------------- |
+| Caracteristics  | Informations |
+| :--------: | :--------: |
 | Name | Stinson |   
 | First Name | Barney |   
 | Username | barney47 |   
