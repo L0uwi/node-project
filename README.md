@@ -27,7 +27,8 @@ And then answer "Y" ("O" in french) to finish the tests.
 
 ## Build and populate
    
-You can try the app with an already existing account !
+You can try the app with an already existing account !  
+
 |          Account              |   
 |  :----:    |       :----:     |   
 |    Name    |      Stinson     |   
