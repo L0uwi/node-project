@@ -3,6 +3,7 @@
 
 <head>
   <% include partials/head %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 
 <body class="container">
@@ -62,16 +63,72 @@
       <hr />
       <br>
       <h4 style='color:rgb(206, 163, 44);'>Here are the metrics of <%= name %></h4>
+      <div>
+        <canvas id="myChart"></canvas>
+      </div>
       <ul>
+        <% graphValue = [];%> 
+        <% graphLabel = [];%>
         <% metrics.forEach(function(metrics){ %>
+        <% graphValue.push(metrics.value); %>
+        <% graphLabel.push(metrics.date); %>
+
         <li style='color:#160e069f;'> Date : <%= metrics.date %> (YYYY-MM-DD) &nbsp; Quantity : <%= metrics.value %>
           <button class="btn btn-danger btn-sm" href="/metric/delete/<%= metrics.date %>"
             onClick='document.location.href="/metric/delete/<%= metrics.date %>"'>X</button>
           <button class="btn btn-warning btn-sm" href="/metric/modify/<%= metrics.date %>"
-            onClick='document.location.href="/metric/modify/<%= metrics.date %>"'>Modifier</button>
+            onClick='document.location.href="/metric/modify/<%= metrics.date %>"'>Modify</button>
         </li>
         <% });%>
       </ul>
+      <script>
+          var value = JSON.parse("[" + "<%= graphValue %>" + "]"); 
+          var label = "<%= graphLabel %>"; 
+          var labels = label.split(",");
+
+//source: https://www.chartjs.org/docs/latest/
+
+          var ctx = document.getElementById('myChart').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Water drank',
+                      data: value,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  },
+              }
+          });
+
+          var donut = document.getElementById('myChart').getContext('2d');
+
+          </script>
       <% } %>
     </div>
   </div>
