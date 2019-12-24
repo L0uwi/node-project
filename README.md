@@ -22,7 +22,7 @@ You can run tests (developped with mocha and chai libraries)
 npm run test
 ```
 They should all pass !  
-To finish the test, just type "ctrl+c" in your terminal.  
+If it doesn't quit the execution alone, just type "ctrl+c" in your terminal.  
 And then answer "Y" ("O" in french) to finish the tests.
 
 ## Build and populate
