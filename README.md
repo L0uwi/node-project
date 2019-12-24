@@ -5,7 +5,7 @@
 This is a combined repository for our Node JS and DevOps project.
 This project was developped to present our skills   
   * in Node js : typescript, ejs   
-  * in DevOps : use of git, readme file, tests (in chai and mocha)
+  * in DevOps : use of git, readme file, tests (in chai and mocha), and use of docker
 
 ## Installing
 
@@ -54,12 +54,20 @@ npm start
 ```
 You then have to connect yourself to 'localhost:8080/'
 
+## Using Docker
+
+We tried to implement our docker image with the `run populate` command. So, our image is working but without a pre-populated database.
+
+There is a dockerfile in our repository. You should use it to run the app.
+
+
 ## Difficulties
 We expressed some difficulties with the d3 library, linking it with our ejs code. So, we decided to use the chart.js library which was more simple for us to use.  
 Also, the routing methods were difficult to implement for us but we achieve to do it !
+As well, we had trouble implementing our docker image...
 
 ## Authors
 This project was developped by :  
     * Louis CAUQUELIN  
     * Eloi ALARDET  
-    from TD SI 03
+ from TD SI 03
