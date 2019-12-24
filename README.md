@@ -29,13 +29,13 @@ And then answer "Y" ("O" in french) to finish the tests.
    
 You can try the app with an already existing account !   
 
-    |Caracteristics|Informations|   
-    |------------| :----: |   
-    |    Name    |      Stinson     |   
-    | First Name |      Barney      |   
-    |  Username  |     barney47     |   
-    |    Email   | barney@gmail.com |   
-    |  Password  |    waitforit     |   
+    | Caracteristics | Informations |   
+    | :----: | :----: |   
+    | Name | Stinson |   
+    | First Name | Barney |   
+    | Username | barney47 |   
+    | Email | barney@gmail.com |   
+    | Password | waitforit |   
 
 
 ```bash
