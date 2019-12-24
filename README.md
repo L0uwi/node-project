@@ -28,13 +28,13 @@ And then answer "Y" ("O" in french) to finish the tests.
 ## Build and populate
    
 You can try the app with an already existing account !
-|          Account              |
-|  :----:    |       :----:     |
-|    Name    |      Stinson     |
-| First Name |      Barney      |
-|  Username  |     barney47     |
-|    Email   | barney@gmail.com |
-|  Password  |    waitforit     |
+|          Account              |   
+|  :----:    |       :----:     |   
+|    Name    |      Stinson     |   
+| First Name |      Barney      |   
+|  Username  |     barney47     |   
+|    Email   | barney@gmail.com |   
+|  Password  |    waitforit     |   
 
 ```bash
 npm run populate
