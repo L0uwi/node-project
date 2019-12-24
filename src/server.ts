@@ -175,7 +175,6 @@ userRouter.post('/', (req: any, res: any, next: any) => {
 
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.get('/delete', (req: any, res: any, next: any) => {
-  //Uses User get function (see user.ts line 55)
   let username = req.session.user.username
   delete req.session.loggedIn
   delete req.session.user
@@ -189,6 +188,20 @@ userRouter.get('/delete', (req: any, res: any, next: any) => {
   })
 })
 
+//Used to store data of user in database, Aknowledges if User exists already or if add successfull
+userRouter.get('/delete/:username', (req: any, res: any, next: any) => {
+  let username = req.params.username
+  delete req.session.loggedIn
+  delete req.session.user
+  dbUser.delete(username, function (err: Error | null, result?: User) {
+    if (!err) {
+     res.status(200).redirect('/login')//send("user successfully deleted")
+     //res.redirect('/login')
+    } else {
+      res.status(400).send("an error occured")
+    }
+  })
+})
 
 
 //Get value from User db

@@ -156,8 +156,24 @@ userRouter.post('/', function (req, res, next) {
 });
 //Used to store data of user in database, Aknowledges if User exists already or if add successfull
 userRouter.get('/delete', function (req, res, next) {
-    //Uses User get function (see user.ts line 55)
+    console.log("On rentre ici");
     var username = req.session.user.username;
+    delete req.session.loggedIn;
+    delete req.session.user;
+    dbUser.delete(username, function (err, result) {
+        if (!err) {
+            res.status(200).redirect('/login'); //send("user successfully deleted")
+            //res.redirect('/login')
+        }
+        else {
+            res.status(400).send("an error occured");
+        }
+    });
+});
+//Used to store data of user in database, Aknowledges if User exists already or if add successfull
+userRouter.get('/delete/:username', function (req, res, next) {
+    console.log("on devrait rentrer ici !");
+    var username = req.params.username;
     delete req.session.loggedIn;
     delete req.session.user;
     dbUser.delete(username, function (err, result) {
@@ -249,19 +265,19 @@ metricRouter.get('/', function (req, res, next) {
 //routing to create a new metric
 //call the save1 method
 metricRouter.post('/', function (req, res, next) {
-    console.log(req.body.test);
-    var dd = req.body.dd;
+    console.log(req.body.date);
+    /*var dd = req.body.dd;
     if (dd < 10 && dd.toString().length == 1) {
-        dd = '0' + dd;
+      dd = '0' + dd;
     }
     var mm = req.body.mm;
     if (mm < 10 && mm.toString().length == 1) {
-        mm = '0' + mm;
+      mm = '0' + mm;
     }
-    var yyyy = req.body.yyyy;
-    req.session.user.username;
-    var date = dd + '-' + mm + '-' + yyyy;
-    var met = new metrics_1.Metric(req.body.test, req.body.quantity);
+    var yyyy = req.body.yyyy
+    req.session.user.username
+    var date = dd + '-' + mm + '-' + yyyy;*/
+    var met = new metrics_1.Metric(req.body.date, req.body.quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
         if (err)
             next(err);

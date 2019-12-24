@@ -18,13 +18,9 @@ const app = require('./server');
 
 describe('Signup', function () {
 
-
-
     before(function () {
         LevelDB.clear(dbPath)
         dbUser = new UserHandler(dbPath)
-
-
     })
 
     after(function () {
@@ -175,7 +171,7 @@ describe('Signup', function () {
 
         it('should delete a user successfully', function(done) {
             chai.request(app)
-            .delete('/user/delete/auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc')
+            .get('/user/delete/auhbcxuahcbuagvcsghaixbjzbcibcuhzvbugvzhubscbjznjscbzibcizc')
             .end(function(err, res) {
                 chai.expect(res).to.have.status("200");
             });
