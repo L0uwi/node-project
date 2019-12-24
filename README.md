@@ -55,7 +55,8 @@ npm start
 You then have to connect yourself to 'localhost:8080/'
 
 ## Difficulties
-We expressed some difficulties with the d3 library, linking it with our ejs code. Also, the routing methods were difficult to implement for us but we achieve to do it !
+We expressed some difficulties with the d3 library, linking it with our ejs code. So, we decided to use the chart.js library which was more simple for us to use.  
+Also, the routing methods were difficult to implement for us but we achieve to do it !
 
 ## Authors
 This project was developped by :  
