@@ -27,15 +27,7 @@ And then answer "Y" ("O" in french) to finish the tests.
 
 ## Build and populate
    
-You can try the app with an already existing account !   
-
-    | Caracteristics | Informations |   
-    |:----:|:----:|   
-    | Name | Stinson |   
-    | First Name | Barney |   
-    | Username | barney47 |   
-    | Email | barney@gmail.com |   
-    | Password | waitforit |   
+You can try the app with an already existing account !    
 
 | Caracteristics  | Informations |
 | :--------: | :--------: |
@@ -43,8 +35,9 @@ You can try the app with an already existing account !
 | First Name | Barney |   
 | Username | barney47 |   
 | Email | barney@gmail.com |   
-| Password | waitforit |
+| Password | waitforit |   
 
+Run this command in order to prefill the database with this user :
 ```bash
 npm run populate
 ```
