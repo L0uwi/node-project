@@ -1,4 +1,5 @@
 import { Metric, MetricsHandler } from '../src/metrics'
+import { User, UserHandler } from '../src/user'
 
 const met = [
   new Metric("01/01/2019", 10),
@@ -16,3 +17,7 @@ db.save('barney47', met, (err: Error | null) => {
   if (err) throw err
   console.log('Data populated')
 })
+
+
+const db2 = new UserHandler('./db/users')
+

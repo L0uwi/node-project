@@ -249,6 +249,7 @@ metricRouter.get('/', function (req, res, next) {
 //routing to create a new metric
 //call the save1 method
 metricRouter.post('/', function (req, res, next) {
+    console.log(req.body.test);
     var dd = req.body.dd;
     if (dd < 10 && dd.toString().length == 1) {
         dd = '0' + dd;
@@ -260,7 +261,7 @@ metricRouter.post('/', function (req, res, next) {
     var yyyy = req.body.yyyy;
     req.session.user.username;
     var date = dd + '-' + mm + '-' + yyyy;
-    var met = new metrics_1.Metric(date, req.body.quantity);
+    var met = new metrics_1.Metric(req.body.test, req.body.quantity);
     dbMet.save1(met, req.session.user.username, function (err) {
         if (err)
             next(err);

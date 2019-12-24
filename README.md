@@ -2,29 +2,34 @@
 
 ## Introduction
 
-This is a combined repository for our Node JS and DevOps project
+This is a combined repository for our Node JS and DevOps project.
 
 ## Installing
 
-```bash
-git clone 
+First, clone the project to your local repository.
+Then, in order to install all the dependencies :
+```bash 
 npm install
 ```
 
-## Build
+## Build and populate
 
 ```bash
 npm run build
 ```
 
-## Development
+## Run the project
 
 ```bash
-npm run dev
+npm start
 ```
+You then have to connect yourself to 'localhost:8080/'
+
+## Difficulties
+We expressed some difficulties with the d3 library, linking it with our ejs code. Also, the routing methods were difficult to implement for us but we achieve to do it !
 
 ## Contributors
 This project was developped by :
-    - Louis CAUQUELIN
-    - Eloi ALARDET
+    * Louis CAUQUELIN
+    * Eloi ALARDET
     from TD SI 03
