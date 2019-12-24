@@ -37,10 +37,13 @@ You can try the app with an already existing account !
     | Email | barney@gmail.com |   
     | Password | waitforit |   
 
-| First Header  | Second Header |
+| Caracteristics  | Information |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Name | Stinson |   
+| First Name | Barney |   
+| Username | barney47 |   
+| Email | barney@gmail.com |   
+| Password | waitforit |
 
 ```bash
 npm run populate
