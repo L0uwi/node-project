@@ -3,6 +3,9 @@
 ## Introduction
 
 This is a combined repository for our Node JS and DevOps project.
+This project was developped to present our skills   
+  * in Node js : typescript, ejs   
+  * in DevOps : use of git, readme file, tests (in chai and mocha)
 
 ## Installing
 
@@ -23,9 +26,9 @@ To finish the test, just type "ctrl+c" in your terminal.
 And then answer "Y" ("O" in french) to finish the tests.
 
 ## Build and populate
-
+   
 You can try the app with an already existing account !
-|       Account                 |
+|          Account              |
 |  :----:    |       :----:     |
 |    Name    |      Stinson     |
 | First Name |      Barney      |
