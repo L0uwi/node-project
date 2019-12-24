@@ -4,12 +4,12 @@
 node_modules/
 
 
-
-
 # MacOS
 .DS_Store
 
-db/
+db/metrics
+db/sessions
+db/users
 !*/.gitkeep
 src_old
 db_test
